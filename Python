@@ -1,0 +1,122 @@
+import tkinter as tk
+from tkinter import ttk
+
+# Function to calculate GST
+def calculate_gst():
+    try:
+        original_price = float(original_price_entry.get())
+        gst_rate = float(gst_rate_combobox.get())
+
+        gst_amount = (original_price * gst_rate) / 100
+        total_price = original_price + gst_amount
+        cgst = gst_amount / 2
+        sgst = gst_amount / 2
+
+        gst_amount_label.config(text=f"GST Amount: ₹{gst_amount:.2f}")
+        total_price_label.config(text=f"Total Price: ₹{total_price:.2f}")
+        cgst_label.config(text=f"CGST: ₹{cgst:.2f}")
+        sgst_label.config(text=f"SGST: ₹{sgst:.2f}")
+    except ValueError:
+        gst_amount_label.config(text="Invalid input!")
+
+# Function to calculate Loan EMI
+def calculate_emi():
+    try:
+        loan_amount = float(loan_amount_entry.get())
+        interest_rate = float(interest_rate_entry.get())
+        loan_tenure = float(loan_tenure_entry.get())
+        tenure_type = tenure_type_combobox.get()
+
+        # Convert tenure to months if in years
+        if tenure_type == "Years":
+            loan_tenure *= 12
+
+        monthly_interest_rate = (interest_rate / 12) / 100
+        emi = (loan_amount * monthly_interest_rate * (1 + monthly_interest_rate) ** loan_tenure) / (
+            (1 + monthly_interest_rate) ** loan_tenure - 1
+        )
+        total_amount = emi * loan_tenure
+        total_interest = total_amount - loan_amount
+
+        monthly_emi_label.config(text=f"Monthly EMI: ₹{emi:.2f}")
+        total_interest_label.config(text=f"Total Interest: ₹{total_interest:.2f}")
+        total_amount_label.config(text=f"Total Amount: ₹{total_amount:.2f}")
+    except ValueError:
+        monthly_emi_label.config(text="Invalid input!")
+
+# Create the main window
+root = tk.Tk()
+root.title("GST and Loan EMI Calculator")
+root.geometry("400x400")
+
+# Create a tabbed interface
+tab_control = ttk.Notebook(root)
+
+# GST Calculator Tab
+gst_tab = ttk.Frame(tab_control)
+tab_control.add(gst_tab, text="GST Calculator")
+
+# Loan EMI Calculator Tab
+loan_tab = ttk.Frame(tab_control)
+tab_control.add(loan_tab, text="Loan EMI Calculator")
+
+tab_control.pack(expand=1, fill="both")
+
+# GST Calculator Widgets
+original_price_label = tk.Label(gst_tab, text="Original Price (₹):")
+original_price_label.pack(pady=5)
+original_price_entry = tk.Entry(gst_tab)
+original_price_entry.pack(pady=5)
+
+gst_rate_label = tk.Label(gst_tab, text="GST Rate (%):")
+gst_rate_label.pack(pady=5)
+gst_rate_combobox = ttk.Combobox(gst_tab, values=["5", "12", "18", "28"])
+gst_rate_combobox.pack(pady=5)
+gst_rate_combobox.set("5")
+
+calculate_gst_button = tk.Button(gst_tab, text="Calculate GST", command=calculate_gst)
+calculate_gst_button.pack(pady=10)
+
+gst_amount_label = tk.Label(gst_tab, text="GST Amount: ₹0.00")
+gst_amount_label.pack(pady=5)
+total_price_label = tk.Label(gst_tab, text="Total Price: ₹0.00")
+total_price_label.pack(pady=5)
+cgst_label = tk.Label(gst_tab, text="CGST: ₹0.00")
+cgst_label.pack(pady=5)
+sgst_label = tk.Label(gst_tab, text="SGST: ₹0.00")
+sgst_label.pack(pady=5)
+
+# Loan EMI Calculator Widgets
+loan_amount_label = tk.Label(loan_tab, text="Loan Amount (₹):")
+loan_amount_label.pack(pady=5)
+loan_amount_entry = tk.Entry(loan_tab)
+loan_amount_entry.pack(pady=5)
+
+interest_rate_label = tk.Label(loan_tab, text="Interest Rate (%):")
+interest_rate_label.pack(pady=5)
+interest_rate_entry = tk.Entry(loan_tab)
+interest_rate_entry.pack(pady=5)
+
+loan_tenure_label = tk.Label(loan_tab, text="Loan Tenure:")
+loan_tenure_label.pack(pady=5)
+loan_tenure_entry = tk.Entry(loan_tab)
+loan_tenure_entry.pack(pady=5)
+
+tenure_type_label = tk.Label(loan_tab, text="Tenure Type:")
+tenure_type_label.pack(pady=5)
+tenure_type_combobox = ttk.Combobox(loan_tab, values=["Months", "Years"])
+tenure_type_combobox.pack(pady=5)
+tenure_type_combobox.set("Months")
+
+calculate_emi_button = tk.Button(loan_tab, text="Calculate EMI", command=calculate_emi)
+calculate_emi_button.pack(pady=10)
+
+monthly_emi_label = tk.Label(loan_tab, text="Monthly EMI: ₹0.00")
+monthly_emi_label.pack(pady=5)
+total_interest_label = tk.Label(loan_tab, text="Total Interest: ₹0.00")
+total_interest_label.pack(pady=5)
+total_amount_label = tk.Label(loan_tab, text="Total Amount: ₹0.00")
+total_amount_label.pack(pady=5)
+
+# Run the application
+root.mainloop()
